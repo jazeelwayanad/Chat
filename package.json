@@ -1,20 +1,21 @@
 {
-  "name": "community-chat",
-  "version": "1.0.0",
+  "name": "chat",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.0.0",
-"next": "^14.0.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "tailwindcss": "^2.0.0"
+    "@supabase/supabase-js": "^2.47.8",
+    "next": "15.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "autoprefixer": "^10.0.0",
-    "postcss": "^8.0.0"
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1"
   }
 }
