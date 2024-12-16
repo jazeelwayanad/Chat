@@ -32,7 +32,7 @@ const LoginForm = () => {
         <div className="max-w-lg text-center">
           <div className="mb-8">
             <img 
-              src="/logo.png" 
+              src="/logo.svg" 
               alt="E-ALIM Logo" 
               className="w-24 h-24 mx-auto rounded-full bg-[#2a303c] p-4"
             />
@@ -52,7 +52,7 @@ const LoginForm = () => {
           {/* Mobile Logo - Only visible on mobile */}
           <div className="lg:hidden text-center mb-8">
             <img 
-              src="/logo.png" 
+              src="/logo.svg" 
               alt="E-ALIM Logo" 
               className="w-20 h-20 mx-auto rounded-full bg-[#2a303c] p-4"
             />
