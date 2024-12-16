@@ -7,7 +7,27 @@ const GroupPage = () => {
   const router = useRouter();
   const { id: groupId } = router.query;
   const { user } = useAuth();
+  const [userEmails, setUserEmails] = useState({}); // Add this new state
+  const fetchUserEmails = async (messages) => {
+    const userIds = [...new Set(messages.map(message => message.user_id))];
+ 
+    const { data: userData, error } = await supabase
+      .from('profiles')  // Assuming you have a profiles table
+      .select('id, email')
+      .in('id', userIds);
 
+    if (error) {
+      console.error('Error fetching user emails:', error);
+      return;
+    }
+
+    const emailMap = {};
+    userData.forEach(user => {
+      emailMap[user.id] = user.email;
+    });
+
+    setUserEmails(emailMap);
+  };
   const [group, setGroup] = useState(null);
   const [members, setMembers] = useState([]);
   const [messages, setMessages] = useState([]);
@@ -99,15 +119,21 @@ const fetchGroupMembers = async () => {
       console.error('Error fetching messages:', error);
     } else {
       setMessages(data);
+      fetchUserEmails(data); // Fetch emails after getting messages
     }
   };
+
 
   // Subscribe to new messages
   const subscribeToMessages = () => {
     const channel = supabase
       .channel(`group:${groupId}`)
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, (payload) => {
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, async (payload) => {
         setMessages((prev) => [...prev, payload.new]);
+        // Fetch email for the new message's user if we don't have it
+        if (!userEmails[payload.new.user_id]) {
+          fetchUserEmails([payload.new]);
+        }
       })
       .subscribe();
 
@@ -115,6 +141,7 @@ const fetchGroupMembers = async () => {
       supabase.removeSubscription(channel);
     };
   };
+
 
   // Send a new message
   const sendMessage = async () => {
@@ -198,29 +225,29 @@ return group ? (
             </div>
           ) : (
             <div className="space-y-4">
-              {messages.map((message) => (
-                <div
-                  key={message.id}
-                  className={`flex ${message.user_id === user.id ? 'justify-end' : 'justify-start'}`}
-                >
-                  <div className={`max-w-[70%] ${message.user_id === user.id ? 'order-2' : 'order-1'}`}>
-                    <div className={`rounded-xl px-4 py-2 ${
-                      message.user_id === user.id 
-                        ? 'bg-[#58cc02] text-white' 
-                        : 'bg-[#2a373f] text-gray-200'
-                    }`}>
-                      <p className="text-sm">{message.text}</p>
-                    </div>
-                    <div className={`mt-1 text-xs text-gray-400 ${
-                      message.user_id === user.id ? 'text-right' : 'text-left'
-                    }`}>
-                      <span>{message.user_id === user.id ? 'You' : message.user_id}</span>
-                      <span className="mx-1">•</span>
-                      <span>{new Date(message.created_at).toLocaleTimeString()}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
+            {messages.map((message) => (
+      <div
+        key={message.id}
+        className={`flex ${message.user_id === user.id ? 'justify-end' : 'justify-start'}`}
+      >
+        <div className={`max-w-[70%] ${message.user_id === user.id ? 'order-2' : 'order-1'}`}>
+          <div className={`rounded-xl px-4 py-2 ${
+            message.user_id === user.id 
+              ? 'bg-[#58cc02] text-white' 
+              : 'bg-[#2a373f] text-gray-200'
+          }`}>
+            <p className="text-sm">{message.text}</p>
+          </div>
+          <div className={`mt-1 text-xs text-gray-400 ${
+            message.user_id === user.id ? 'text-right' : 'text-left'
+          }`}>
+            <span>{message.user_id === user.id ? 'You' : userEmails[message.user_id] || 'Unknown User'}</span>
+            <span className="mx-1">•</span>
+            <span>{new Date(message.created_at).toLocaleTimeString()}</span>
+          </div>
+        </div>
+      </div>
+    ))}
             </div>
           )}
         </div>

@@ -37,7 +37,7 @@ const SignupForm = () => {
         <div className="flex flex-col items-center">
           <div className="w-24 h-24 rounded-full bg-[#2a2f3b] flex items-center justify-center mb-4">
             <img
-                src="avatar.png"
+                src="/avatar.png"
               alt="Avatar"
               className="w-16 h-16"
             />

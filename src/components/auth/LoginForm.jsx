@@ -32,7 +32,7 @@ const LoginForm = () => {
         <div className="max-w-lg text-center">
           <div className="mb-8">
             <img 
-              src=".src/components/auth/avatar.png" 
+              src="/avatar.png" 
               alt="E-ALIM Logo" 
               className="w-24 h-24 mx-auto rounded-full bg-[#2a303c] p-4"
             />
