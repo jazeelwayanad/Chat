@@ -29,7 +29,7 @@ const Index = () => {
             <div className="w-full h-[400px] rounded-xl bg-[#242a31] border border-[#2f363d] flex items-center justify-center">
               <div className="w-32 h-32 rounded-full overflow-hidden">
                 <img 
-                  src="/avatar.svg" 
+                  src="avatar.png" 
                   alt="Avatar" 
                   className="w-full h-full object-cover"
                 />
